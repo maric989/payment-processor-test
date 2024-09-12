@@ -20,3 +20,8 @@ services:
     App\Application\Service\Payment\AciProvider:
         arguments:
             $logger: '@logger'
+
+    App\Application\Command\ProcessPaymentCommand:
+        tags: [ 'console.command' ]
+        arguments:
+            $paymentProviderFactory: '@App\Application\Factory\PaymentProviderFactory'

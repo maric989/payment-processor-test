@@ -81,7 +81,7 @@ class AciProvider implements PaymentProcessorInterface
                 'paymentData' => $data
             ]);
 
-            return false;
+            throw new PaymentException('Payment processing failed: ' . $errorMessage);
         }
 
         curl_close($ch);
