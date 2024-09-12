@@ -8,8 +8,8 @@ class ProcessPaymentDTO
         public float $amount,
         public string $currency,
         public string $cardNumber,
-        public string $cardExpYear,
-        public string $cardExpMonth,
+        public int $cardExpYear,
+        public int $cardExpMonth,
         public string $cardCvv,
     ) {
     }

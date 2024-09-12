@@ -27,16 +27,16 @@ class AciProviderTest extends TestCase
     public function testProcessPaymentSuccess(): void
     {
         $paymentDTO = new ProcessPaymentDTO(
-            100.00,
-            'EUR',
-            '4200000000000000',
-            12,
-            2026,
-            '123'
+            amount: 100.00,
+            currency: 'EUR',
+            cardNumber: '4200000000000000',
+            cardExpYear: 2026,
+            cardExpMonth: 12,
+            cardCvv: 123
         );
 
         $mockResponse = json_encode([
-            'transaction_id' => 'txn_12345',
+            'id' => 'txn_12345',
             'timestamp' => '2024-09-12T12:00:00Z',
             'amount' => 10000,
             'currency' => 'EUR',
