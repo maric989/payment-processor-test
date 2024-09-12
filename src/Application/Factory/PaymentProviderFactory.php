@@ -5,6 +5,7 @@ namespace App\Application\Factory;
 use App\Application\Contract\PaymentProcessorInterface;
 use App\Application\Service\Payment\AciProvider;
 use App\Application\Service\Payment\Shift4Provider;
+use App\Domain\Exception\InvalidPaymentProviderException;
 
 class PaymentProviderFactory
 {
@@ -19,7 +20,7 @@ class PaymentProviderFactory
         return match ($provider) {
             'shift4' => $this->shift4Provider,
             'aci' => $this->aciProvider,
-            default => throw new \InvalidArgumentException('Invalid provider'),
+            default => throw new InvalidPaymentProviderException(),
         };
     }
 }

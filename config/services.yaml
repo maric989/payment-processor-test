@@ -12,6 +12,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Application\Service\Http\CurlClient: ~
+
     App\Application\Service\Payment\Shift4Provider:
         arguments:
             $shift4ApiKey: '%shift4_api_key%'
@@ -19,6 +21,7 @@ services:
 
     App\Application\Service\Payment\AciProvider:
         arguments:
+            $curlClient: '@App\Application\Service\Http\CurlClient'
             $logger: '@logger'
 
     App\Application\Command\ProcessPaymentCommand:

@@ -6,14 +6,16 @@ use App\Application\Contract\PaymentProcessorInterface;
 use App\Application\DTO\Input\Payment\Aci\ChargeRequestDTO;
 use App\Application\DTO\Input\ProcessPaymentDTO;
 use App\Application\DTO\Output\PaymentResponse;
+use App\Application\Service\Http\CurlClient;
 use App\Domain\Exception\PaymentException;
 use Psr\Log\LoggerInterface;
 
 class AciProvider implements PaymentProcessorInterface
 {
-    private const ACI_URL = "https://eu-test.oppwa.com/v1/payments";
+    public const ACI_URL = "https://eu-test.oppwa.com/v1/payments";
 
     public function __construct(
+        private readonly CurlClient $curlClient,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -30,7 +32,7 @@ class AciProvider implements PaymentProcessorInterface
                 cvv: $paymentDTO->cardCvv,
             );
 
-            $responseData = $this->makeCurlRequest($chargeDto->preparePaymentData());
+            $responseData = $this->curlClient->postRequest(self::ACI_URL, $chargeDto->preparePaymentData());
             $responseData = json_decode($responseData, true);
 
             return new PaymentResponse(
@@ -56,35 +58,5 @@ class AciProvider implements PaymentProcessorInterface
 
             throw new PaymentException('Payment processing failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
         }
-
-    }
-
-    private function makeCurlRequest(string $data): string|false
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::ACI_URL);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $responseData = curl_exec($ch);
-
-        if(curl_errno($ch)) {
-            $errorMessage = curl_error($ch);
-            curl_close($ch);
-
-            $this->logger->error('cURL error during ACI payment request.', [
-                'error' => $errorMessage,
-                'paymentData' => $data
-            ]);
-
-            throw new PaymentException('Payment processing failed: ' . $errorMessage);
-        }
-
-        curl_close($ch);
-        return $responseData;
     }
 }

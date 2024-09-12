@@ -16,6 +16,12 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite (for Symfony routing)
 RUN a2enmod rewrite
 
+# Install Xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+COPY ./php.ini /usr/local/etc/php/php.ini
+
 # Set working directory
 WORKDIR /var/www/html
 
