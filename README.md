@@ -66,6 +66,11 @@ This project is a payment processing system that integrates with external paymen
    docker-compose exec app ./vendor/bin/phpunit --coverage-html coverage/
    ```   
 
+7. **Documentation can be found here:**
+   ```bash
+   http://localhost:8000/api/doc
+   ```
+
    Ensure the Docker containers are running before executing the tests.
 
 
